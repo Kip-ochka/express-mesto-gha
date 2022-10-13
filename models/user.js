@@ -1,22 +1,22 @@
 const mestodb = require('mongoose')
-
-const userSchema = new mestodb.Schema({
+const { Schema } = mestodb
+const userSchema = new Schema({
   name: {
     type: String,
     required: true,
     minlength: 2,
     maxlength: 30,
   },
-  about:{
+  about: {
     type: String,
     required: true,
     minlength: 2,
     maxlength: 30,
   },
-  avatar:{
+  avatar: {
     type: String,
     required: true,
-  }
-})
+  },
+},{versionKey:false})
 
 module.exports = mestodb.model('user', userSchema)

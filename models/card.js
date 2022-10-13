@@ -1,7 +1,7 @@
 const mestodb = require('mongoose')
+const { Schema } = mestodb
 
-
-const cardSchema = new mestodb.Schema({
+const cardSchema = new Schema({
   name: {
     type: String,
     required: true,
@@ -24,6 +24,6 @@ const cardSchema = new mestodb.Schema({
     type: Date,
     default: Date.now(),
   },
-})
+},{versionKey:false})
 
 module.exports = mestodb.model('card', cardSchema)
