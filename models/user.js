@@ -1,5 +1,7 @@
-const mestodb = require('mongoose')
-const { Schema } = mestodb
+const mestodb = require('mongoose');
+
+const { Schema } = mestodb;
+
 const userSchema = new Schema({
   name: {
     type: String,
@@ -17,6 +19,6 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-},{versionKey:false})
+}, { versionKey: false });
 
-module.exports = mestodb.model('user', userSchema)
+module.exports = mestodb.model('user', userSchema);
