@@ -79,15 +79,11 @@ const updateUserData = (req, res, userData) => {
     });
 };
 
-// eslint-disable-next-line consistent-return
 module.exports.updateUserInfo = (req, res) => {
   const userData = {
     name: req.body.name,
     about: req.body.about,
   };
-  if (userData.name.length < 2 && userData.about.length < 2) {
-    return res.send({ message: 'Количество симвовлов в отдном из полей меньше 2х' });
-  }
   updateUserData(req, res, userData);
 };
 
