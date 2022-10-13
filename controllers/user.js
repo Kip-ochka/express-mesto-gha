@@ -1,38 +1,33 @@
-const User = require("../models/user");
+const User = require('../models/user');
 
 module.exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => {
       res.send(users);
     })
-    .catch((err) =>
-      res.status(500).send({
-        message: "На сервере произошла обика",
-        err,
-      })
-    );
+    .catch((err) => res.status(500).send({ message: 'На сервере произошла обика', err }));
 };
 
 module.exports.getUser = (req, res) => {
   User.findById(req.params.userId)
-    .orFail(new Error("Not Found"))
+    .orFail(new Error('Not Found'))
     .then((user) => {
       res.send(user);
     })
     .catch((err) => {
-      if (err.message === "Not Found") {
+      if (err.message === 'Not Found') {
         return res
           .status(404)
-          .send({ message: "Пользователь с указанным _id не найден" });
+          .send({ message: 'Пользователь с указанным _id не найден' });
       }
-      if (err.name === "CastError") {
+      if (err.name === 'CastError') {
         return res
           .status(400)
-          .send({ message: "Не корректный _id пользователя" });
+          .send({ message: 'Не корректный _id пользователя' });
       }
       return res
         .status(500)
-        .send({ message: "На сервере произошла ошибка" }, err);
+        .send({ message: 'На сервере произошла ошибка' }, err);
     });
 };
 
@@ -47,14 +42,14 @@ module.exports.createUser = (req, res) => {
       res.status(201).send(user);
     })
     .catch((err) => {
-      if (err.name === "ValidationError") {
+      if (err.name === 'ValidationError') {
         return res.status(400).send({
-          message: "Ошибка валидации",
+          message: 'Ошибка валидации',
           err,
         });
       }
       return res.status(500).send({
-        message: "На сервере произошла обика",
+        message: 'На сервере произошла обика',
         err,
       });
     });
@@ -65,22 +60,22 @@ const updateUserData = (req, res, userData) => {
     new: true,
     runValidators: true,
   })
-    .orFail(new Error("Not Found"))
+    .orFail(new Error('Not Found'))
     .then((user) => res.send({ data: user }))
     .catch((err) => {
-      if (err.message === "Not Found") {
+      if (err.message === 'Not Found') {
         return res
           .status(404)
-          .send({ message: "Пользователь с указанным _id не найден" });
+          .send({ message: 'Пользователь с указанным _id не найден' });
       }
-      if (err.name === "CastError") {
+      if (err.name === 'Cast.Error') {
         return res
           .status(400)
-          .send({ message: "Не корректный _id пользователя" });
+          .send({ message: 'Не корректный _id пользователя' });
       }
       return res
         .status(500)
-        .send({ message: "На сервере произошла ошибка" }, err);
+        .send({ message: 'На сервере произошла ошибка' }, err);
     });
 };
 
