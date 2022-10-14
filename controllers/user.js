@@ -55,7 +55,11 @@ module.exports.createUser = (req, res) => {
     });
 };
 
-const updateUserData = (req, res, userData) => {
+module.exports.updateUserInfo = (req, res) => {
+  const userData = {
+    name: req.body.name,
+    about: req.body.about,
+  };
   User.findByIdAndUpdate(req.user._id, userData, {
     new: true,
     runValidators: true,
@@ -79,17 +83,29 @@ const updateUserData = (req, res, userData) => {
     });
 };
 
-module.exports.updateUserInfo = (req, res) => {
-  const userData = {
-    name: req.body.name,
-    about: req.body.about,
-  };
-  updateUserData(req, res, userData);
-};
-
 module.exports.updateUserAvatar = (req, res) => {
   const userData = {
     avatar: req.body.avatar,
   };
-  updateUserData(req, res, userData);
+  User.findByIdAndUpdate(req.user._id, userData, {
+    new: true,
+    runValidators: true,
+  })
+    .orFail(new Error('Not Found'))
+    .then((user) => res.send({ data: user }))
+    .catch((err) => {
+      if (err.message === 'Not Found') {
+        return res
+          .status(404)
+          .send({ message: 'Пользователь с указанным _id не найден' });
+      }
+      if (err.name === 'Cast.Error') {
+        return res
+          .status(400)
+          .send({ message: 'Не корректный _id пользователя' });
+      }
+      return res
+        .status(500)
+        .send({ message: 'На сервере произошла ошибка' }, err);
+    });
 };
