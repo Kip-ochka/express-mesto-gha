@@ -44,7 +44,7 @@ module.exports.deleteCards = (req, res) => {
           .send({ message: 'Карточка с указанным _id не найден' });
       }
       if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Не корректный _id карточки' });
+        return res.status(404).send({ message: 'Не корректный _id карточки' });
       }
       return res
         .status(500)
@@ -61,7 +61,7 @@ const handleLike = (req, res, options) => {
   )
     .then((card) => {
       if (!card) {
-        return res.status(404).send({ message: 'Карточка не найдена' });
+        return res.status(400).send({ message: 'Карточка не найдена' });
       }
       return res.status(200).send(card);
     })
