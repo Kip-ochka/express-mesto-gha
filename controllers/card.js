@@ -40,11 +40,11 @@ module.exports.deleteCards = (req, res) => {
     .catch((err) => {
       if (err.message === 'Not Found') {
         return res
-          .status(400)
+          .status(404)
           .send({ message: 'Карточка с указанным _id не найден' });
       }
       if (err.name === 'CastError') {
-        return res.status(404).send({ message: 'Не корректный _id карточки' });
+        return res.status(400).send({ message: 'Не корректный _id карточки' });
       }
       return res
         .status(500)

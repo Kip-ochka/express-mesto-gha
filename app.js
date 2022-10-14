@@ -9,8 +9,6 @@ const app = express();
 
 mestodb.connect(MONGO_URL);
 
-app.listen(PORT);
-
 app.use(express.json());
 
 app.use((req, res, next) => {
@@ -21,5 +19,7 @@ app.use((req, res, next) => {
 app.use(routes);
 
 app.use('*', (req, res) => {
-  res.status(40).send({ message: 'Неверный запрос или адрес. Перепроверьте URL и метод запроса.' });
+  res.status(404).send({ message: 'Неверный запрос или адрес. Перепроверьте URL и метод запроса.' });
 });
+
+app.listen(PORT);
