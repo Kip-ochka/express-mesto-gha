@@ -62,7 +62,7 @@ const updateData = (req, res, userData) => {
   })
     .then((user) => res.send(user))
     .catch((err) => {
-      if (err.message === 'ValidationError') {
+      if (err.name === 'ValidationError') {
         return res
           .status(400)
           .send({ message: 'Переданные не валидные данные' });
@@ -74,7 +74,7 @@ const updateData = (req, res, userData) => {
       }
       return res
         .status(500)
-        .send({ message: 'На сервере произошла ошибка' }, err);
+        .send({ message: 'На сервер произошла ошибка.' });
     });
 };
 
