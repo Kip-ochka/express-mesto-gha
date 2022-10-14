@@ -35,7 +35,7 @@ module.exports.deleteCards = (req, res) => {
   Cards.findByIdAndDelete(req.params.cardId)
     .orFail(new Error('Not Found'))
     .then(() => {
-      res.send('Карточка удалена');
+      res.send({ message: 'Карточка удалена' });
     })
     .catch((err) => {
       if (err.message === 'Not Found') {
@@ -58,14 +58,20 @@ const handleLike = (req, res, options) => {
     req.params.cardId,
     { [action]: { likes: req.user._id } },
     { new: true },
-  ).then((card) => { res.status(200).send(card); })
+  )
+    .then((card) => {
+      if (!card) {
+        return res.status(404).send({ message: 'Карточка не найдена' });
+      }
+      return res.status(200).send(card);
+    })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(404).send({ message: 'Не корректный _id карточки или такой карточки не существует' });
+        return res.status(404).send({ message: 'Не корректный _id карточки' });
       }
       return res
         .status(500)
-        .send(err);
+        .send({ message: 'Не удалось изменить карточку' });
     });
 };
 

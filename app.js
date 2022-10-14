@@ -19,3 +19,7 @@ app.use((req, res, next) => {
 });
 
 app.use(routes);
+
+app.use('*', (req, res) => {
+  res.status(404).send({ message: 'Неверный запрос или адрес. Перепроверьте URL и метод запроса.' });
+});
