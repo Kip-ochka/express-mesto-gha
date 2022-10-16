@@ -1,11 +1,12 @@
 const User = require('../models/user');
+const { DEFAULT_ERROR_CODE, NOT_FOUND_ERROR_CODE, INCORRECT_DATA_ERROR_CODE } = require('../utils/errors');
 
 module.exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => {
       res.send(users);
     })
-    .catch((err) => res.status(500).send({ message: 'На сервере произошла обика', err }));
+    .catch(() => res.status(DEFAULT_ERROR_CODE).send({ message: 'На сервере произошла обика' }));
 };
 
 module.exports.getUser = (req, res) => {
@@ -17,17 +18,17 @@ module.exports.getUser = (req, res) => {
     .catch((err) => {
       if (err.message === 'Not Found') {
         return res
-          .status(404)
+          .status(NOT_FOUND_ERROR_CODE)
           .send({ message: 'Пользователь с указанным _id не найден' });
       }
       if (err.name === 'CastError') {
         return res
-          .status(400)
+          .status(INCORRECT_DATA_ERROR_CODE)
           .send({ message: 'Не корректный _id пользователя' });
       }
       return res
-        .status(500)
-        .send({ message: 'На сервере произошла ошибка' }, err);
+        .status(DEFAULT_ERROR_CODE)
+        .send({ message: 'На сервере произошла ошибка' });
     });
 };
 
@@ -39,19 +40,13 @@ module.exports.createUser = (req, res) => {
     avatar,
   })
     .then((user) => {
-      res.status(201).send(user);
+      res.send(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(400).send({
-          message: 'Ошибка валидации',
-          err,
-        });
+        return res.status(INCORRECT_DATA_ERROR_CODE).send({ message: 'Ошибка валидации' });
       }
-      return res.status(500).send({
-        message: 'На сервере произошла обика',
-        err,
-      });
+      return res.status(DEFAULT_ERROR_CODE).send({ message: 'На сервере произошла обика' });
     });
 };
 
@@ -65,17 +60,17 @@ const updateUserData = (req, res, userData) => {
     .catch((err) => {
       if (err.message === 'Not Found') {
         return res
-          .status(404)
+          .status(NOT_FOUND_ERROR_CODE)
           .send({ message: 'Пользователь с указанным _id не найден' });
       }
       if (err.name === 'Cast.Error') {
         return res
-          .status(400)
+          .status(INCORRECT_DATA_ERROR_CODE)
           .send({ message: 'Не корректный _id пользователя' });
       }
       return res
-        .status(500)
-        .send({ message: 'На сервере произошла ошибка' }, err);
+        .status(DEFAULT_ERROR_CODE)
+        .send({ message: 'На сервере произошла ошибка' });
     });
 };
 

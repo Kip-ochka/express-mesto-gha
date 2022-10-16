@@ -1,7 +1,7 @@
 {
   "name": "express-backend",
   "version": "1.0.0",
-  "description": "[![Tests](https://github.com/yandex-praktikum/express-mesto-gha/actions/workflows/tests-13-sprint.yml/badge.svg)](https://github.com/yandex-praktikum/express-mesto-gha/actions/workflows/tests-13-sprint.yml) [![Tests](https://github.com/yandex-praktikum/express-mesto-gha/actions/workflows/tests-14-sprint.yml/badge.svg)](https://github.com/yandex-praktikum/express-mesto-gha/actions/workflows/tests-14-sprint.yml)\r # Проект Mesto фронтенд + бэкенд",
+  "description": "# Проект Mesto фронтенд + бэкенд",
   "main": "app.js",
   "scripts": {
     "lint": "npx eslint .",
@@ -26,6 +26,8 @@
   },
   "dependencies": {
     "express": "^4.18.2",
+    "express-rate-limit": "^6.6.0",
+    "helmet": "^6.0.0",
     "mongoose": "^6.6.5"
   }
 }
