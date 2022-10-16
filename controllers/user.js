@@ -59,8 +59,8 @@ const updateData = (req, res, userData) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res
-          .status(NOT_FOUND_ERROR_CODE)
-          .send({ message: 'Пользователь с указанным _id не найден' });
+          .status(INCORRECT_DATA_ERROR_CODE)
+          .send({ message: 'Отправленные данные некорректный, перепроверьте данные.' });
       }
       if (err.name === 'Cast.Error') {
         return res
