@@ -50,15 +50,14 @@ module.exports.createUser = (req, res) => {
     });
 };
 
-const updateUserData = (req, res, userData) => {
+const updateData = (req, res, userData) => {
   User.findByIdAndUpdate(req.user._id, userData, {
     new: true,
     runValidators: true,
   })
-    .orFail(new Error('Not Found'))
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send(user))
     .catch((err) => {
-      if (err.message === 'Not Found') {
+      if (err.name === 'ValidationError') {
         return res
           .status(NOT_FOUND_ERROR_CODE)
           .send({ message: 'Пользователь с указанным _id не найден' });
@@ -79,12 +78,12 @@ module.exports.updateUserInfo = (req, res) => {
     name: req.body.name,
     about: req.body.about,
   };
-  updateUserData(req, res, userData);
+  updateData(req, res, userData);
 };
 
 module.exports.updateUserAvatar = (req, res) => {
   const userData = {
     avatar: req.body.avatar,
   };
-  updateUserData(req, res, userData);
+  updateData(req, res, userData);
 };
