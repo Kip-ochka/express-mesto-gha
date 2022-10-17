@@ -16,10 +16,6 @@ app.use((req, res, next) => {
   req.user = { _id: '634913d641a6d1893e34bb53' };
   next();
 });
-app.use(routes);
-app.use('*', (req, res) => {
-  res.status(NOT_FOUND_ERROR_CODE).send({ message: 'Неверный запрос или адрес. Перепроверьте URL и метод запроса.' });
-});
 app.use(helmet);
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -28,3 +24,8 @@ const limiter = rateLimit({
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 app.use(limiter);
+app.use(routes);
+app.use('*', (req, res) => {
+  res.status(NOT_FOUND_ERROR_CODE).send({ message: 'Неверный запрос или адрес. Перепроверьте URL и метод запроса.' });
+});
+
