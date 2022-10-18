@@ -28,4 +28,3 @@ app.use(routes);
 app.use('*', (req, res) => {
   res.status(NOT_FOUND_ERROR_CODE).send({ message: 'Неверный запрос или адрес. Перепроверьте URL и метод запроса.' });
 });
-
