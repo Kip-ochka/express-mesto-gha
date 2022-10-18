@@ -16,7 +16,7 @@ app.use((req, res, next) => {
   req.user = { _id: '634913d641a6d1893e34bb53' };
   next();
 });
-app.use(helmet);
+app.use(helmet());
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // for 15 minutes
   max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
