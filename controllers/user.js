@@ -1,3 +1,5 @@
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const { DEFAULT_ERROR_CODE, NOT_FOUND_ERROR_CODE, INCORRECT_DATA_ERROR_CODE } = require('../utils/errors');
 
@@ -33,15 +35,20 @@ module.exports.getUser = (req, res) => {
 };
 
 module.exports.createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
-  User.create({
-    name,
-    about,
-    avatar,
+  const {
+    name, about, avatar, email,
+  } = req.body;
+  bcrypt.hash(req.body.password, 10).then((hash) => {
+    User.create({
+      name,
+      about,
+      avatar,
+      email,
+      password: hash,
+    });
+  }).then((user) => {
+    res.send(user);
   })
-    .then((user) => {
-      res.send(user);
-    })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(INCORRECT_DATA_ERROR_CODE).send({ message: 'Ошибка валидации' });
@@ -86,4 +93,23 @@ module.exports.updateUserAvatar = (req, res) => {
     avatar: req.body.avatar,
   };
   updateData(req, res, userData);
+};
+
+module.exports.login = (req, res) => {
+  const { email, password } = req.body;
+  return User.findUser(email, password).then((user) => {
+    const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
+    res.cookie('token', token, { maxAge: 3600 * 24 * 7, httpOnly: true, sameSite: true })
+      .send({ email })
+      .catch((err) => {
+        if (err.name === 'ValidationError') {
+          return res
+            .status(INCORRECT_DATA_ERROR_CODE)
+            .send({ message: 'Отправленные данные некорректный, перепроверьте данные.' });
+        }
+        return res
+          .status(DEFAULT_ERROR_CODE)
+          .send({ message: 'На сервере произошла ошибка' });
+      });
+  });
 };
