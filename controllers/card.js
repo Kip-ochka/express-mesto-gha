@@ -74,10 +74,10 @@ const handleLike = (req, res, next, options) => {
     });
 };
 
-module.exports.likeCard = (req, res) => {
-  handleLike(req, res, { addLike: true });
+module.exports.likeCard = (req, res, next) => {
+  handleLike(req, res, next, { addLike: true });
 };
 
-module.exports.dislikeCard = (req, res) => {
-  handleLike(req, res, { addLike: false });
+module.exports.dislikeCard = (req, res, next) => {
+  handleLike(req, res, next, { addLike: false });
 };
