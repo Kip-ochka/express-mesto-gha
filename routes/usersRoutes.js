@@ -11,7 +11,7 @@ const { validateUserId, validateUserInfo, validateUserAvatar } = require('../uti
 
 usersRoutes.get('/', getUsers);
 usersRoutes.get('/me', getMyData);
-usersRoutes.get('/:userId', validateUserId, getUser);
+usersRoutes.get('/:id', validateUserId, getUser);
 usersRoutes.patch('/me', validateUserInfo, updateUserInfo);
 usersRoutes.patch('/me/avatar', validateUserAvatar, updateUserAvatar);
 

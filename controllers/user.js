@@ -14,7 +14,7 @@ module.exports.getUsers = (_, res, next) => {
 };
 
 module.exports.getUser = (req, res, next) => {
-  User.findById(req.params.userId)
+  User.findById(req.params.id)
     .then((user) => {
       if (!user) {
         throw new NotFound('Пользователь с таким id не найден');
@@ -60,7 +60,7 @@ module.exports.login = (req, res, next) => {
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
       res.cookie('token', token, { maxAge: 3600 * 24 * 7, httpOnly: true, sameSite: true })
-        .send(user);
+        .send({ email });
     }).catch((err) => {
       if (err.name === 'CastError') {
         next(new BadRequest('Некорректный формат id пользователя'));
