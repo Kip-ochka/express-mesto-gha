@@ -56,17 +56,18 @@ module.exports.createUser = (req, res, next) => {
 
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
-  return User.findUser(email, password).then((user) => {
-    const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
-    res.cookie('token', token, { maxAge: 3600 * 24 * 7, httpOnly: true, sameSite: true })
-      .send({ email });
-  }).catch((err) => {
-    if (err.name === 'CastError') {
-      next(new BadRequest('Некорректный формат id пользователя'));
-    } else {
-      next(err);
-    }
-  });
+  return User.findUser(email, password)
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
+      res.cookie('token', token, { maxAge: 3600 * 24 * 7, httpOnly: true, sameSite: true })
+        .send(user);
+    }).catch((err) => {
+      if (err.name === 'CastError') {
+        next(new BadRequest('Некорректный формат id пользователя'));
+      } else {
+        next(err);
+      }
+    });
 };
 
 const updateData = (req, res, next, userData) => {
@@ -102,7 +103,10 @@ module.exports.updateUserAvatar = (req, res, next) => {
 };
 
 module.exports.getMyData = (req, res, next) => {
+  console.log(req.body);
   User.findOne({ _id: req.user._id })
-    .then((user) => { res.send(user); })
+    .then((user) => {
+      res.send(user);
+    })
     .catch(next);
 };
