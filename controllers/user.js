@@ -103,7 +103,6 @@ module.exports.updateUserAvatar = (req, res, next) => {
 };
 
 module.exports.getMyData = (req, res, next) => {
-  console.log(req.body);
   User.findOne({ _id: req.user._id })
     .then((user) => {
       res.send(user);
