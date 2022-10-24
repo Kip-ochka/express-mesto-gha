@@ -41,9 +41,6 @@ module.exports.createUser = (req, res, next) => {
       avatar,
       email,
       password: hash,
-    }, {
-      new: true,
-      runValidators: true,
     }).then((user) => {
       res.send(user);
     });
