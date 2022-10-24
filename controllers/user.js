@@ -41,19 +41,17 @@ module.exports.createUser = (req, res, next) => {
       avatar,
       email,
       password: hash,
-    }).then((user) => {
-      res.send(user);
-    });
-  })
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        next(new BadRequest('Ошибка валидации'));
-      } else if (err.code === 11000) {
-        next(new Matched('Пользователь с данным email уж существует'));
-      } else {
-        next(err);
-      }
-    });
+    }).then((user) => { res.send(user); })
+      .catch((err) => {
+        if (err.code === 11000) {
+          next(new Matched('Пользователь с данным email уж существует'));
+        } else if (err.name === 'ValidationError') {
+          next(new BadRequest('Ошибка валидации'));
+        } else {
+          next(err);
+        }
+      });
+  });
 };
 
 module.exports.login = (req, res, next) => {
