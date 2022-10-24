@@ -39,23 +39,22 @@ const userSchema = new Schema({
     type: String,
     requared: true,
     minlength: 2,
+    select: false,
   },
 }, { versionKey: false });
 
-userSchema.statics.findUser = function (email, password) {
-  return this.findOne({ email }).select('+password')
-    .then((user) => {
-      if (!user) {
-        return Promise.reject(new Error('Неправильная почта или пароль'));
-      }
-      return bcrypt.compare(password, user.password)
-        .then((matched) => {
-          if (!matched) {
-            return Promise.reject(new Error('Неправильная почта или пароль'));
-          }
-          return user;
-        });
-    });
-};
+userSchema.statics.findUser = (email, password) => this.findOne({ email }).select('+password')
+  .then((user) => {
+    if (!user) {
+      return Promise.reject(new Error('Неправильная почта или пароль'));
+    }
+    return bcrypt.compare(password, user.password)
+      .then((matched) => {
+        if (!matched) {
+          return Promise.reject(new Error('Неправильная почта или пароль'));
+        }
+        return user;
+      });
+  });
 
 module.exports = mestodb.model('user', userSchema);

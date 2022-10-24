@@ -1,40 +1,36 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const { DEFAULT_ERROR_CODE, NOT_FOUND_ERROR_CODE, INCORRECT_DATA_ERROR_CODE } = require('../utils/errors');
+const NotFound = require('../errors/notFound');
+const BadRequest = require('../errors/badRequest');
+const Matched = require('../errors/matched');
 
-module.exports.getUsers = (req, res) => {
+module.exports.getUsers = (_, res, next) => {
   User.find({})
     .then((users) => {
       res.send(users);
     })
-    .catch(() => res.status(DEFAULT_ERROR_CODE).send({ message: 'На сервере произошла обика' }));
+    .catch(next);
 };
 
-module.exports.getUser = (req, res) => {
+module.exports.getUser = (req, res, next) => {
   User.findById(req.params.userId)
-    .orFail(new Error('Not Found'))
     .then((user) => {
+      if (!user) {
+        throw new NotFound('Пользователь с таким id не найден');
+      }
       res.send(user);
     })
     .catch((err) => {
-      if (err.message === 'Not Found') {
-        return res
-          .status(NOT_FOUND_ERROR_CODE)
-          .send({ message: 'Пользователь с указанным _id не найден' });
-      }
       if (err.name === 'CastError') {
-        return res
-          .status(INCORRECT_DATA_ERROR_CODE)
-          .send({ message: 'Не корректный _id пользователя' });
+        next(new BadRequest('Некорректный формат id пользователя'));
+      } else {
+        next(err);
       }
-      return res
-        .status(DEFAULT_ERROR_CODE)
-        .send({ message: 'На сервере произошла ошибка' });
     });
 };
 
-module.exports.createUser = (req, res) => {
+module.exports.createUser = (req, res, next) => {
   const {
     name, about, avatar, email,
   } = req.body;
@@ -45,19 +41,37 @@ module.exports.createUser = (req, res) => {
       avatar,
       email,
       password: hash,
+    }).then((user) => {
+      res.send(user);
     });
-  }).then((user) => {
-    res.send(user);
   })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(INCORRECT_DATA_ERROR_CODE).send({ message: 'Ошибка валидации' });
+        next(new BadRequest('Ошибка валидации'));
+      } else if (err.code === 11000) {
+        next(new Matched('Пользователь с данным email уж существует'));
+      } else {
+        next(err);
       }
-      return res.status(DEFAULT_ERROR_CODE).send({ message: 'На сервере произошла обика' });
     });
 };
 
-const updateData = (req, res, userData) => {
+module.exports.login = (req, res, next) => {
+  const { email, password } = req.body;
+  return User.findUser(email, password).then((user) => {
+    const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
+    res.cookie('token', token, { maxAge: 3600 * 24 * 7, httpOnly: true, sameSite: true })
+      .send({ email });
+  }).catch((err) => {
+    if (err.name === 'CastError') {
+      next(new BadRequest('Некорректный формат id пользователя'));
+    } else {
+      next(err);
+    }
+  });
+};
+
+const updateData = (req, res, next, userData) => {
   User.findByIdAndUpdate(req.user._id, userData, {
     new: true,
     runValidators: true,
@@ -65,51 +79,32 @@ const updateData = (req, res, userData) => {
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res
-          .status(INCORRECT_DATA_ERROR_CODE)
-          .send({ message: 'Отправленные данные некорректный, перепроверьте данные.' });
+        next(new BadRequest('Отправленные данные некорректный, перепроверьте данные.'));
+      } else if (err.name === 'CastError') {
+        next(new BadRequest('Не корректный _id пользователя'));
+      } else {
+        next(err);
       }
-      if (err.name === 'Cast.Error') {
-        return res
-          .status(INCORRECT_DATA_ERROR_CODE)
-          .send({ message: 'Не корректный _id пользователя' });
-      }
-      return res
-        .status(DEFAULT_ERROR_CODE)
-        .send({ message: 'На сервере произошла ошибка' });
     });
 };
 
-module.exports.updateUserInfo = (req, res) => {
+module.exports.updateUserInfo = (req, res, next) => {
   const userData = {
     name: req.body.name,
     about: req.body.about,
   };
-  updateData(req, res, userData);
+  updateData(req, res, next, userData);
 };
 
-module.exports.updateUserAvatar = (req, res) => {
+module.exports.updateUserAvatar = (req, res, next) => {
   const userData = {
     avatar: req.body.avatar,
   };
-  updateData(req, res, userData);
+  updateData(req, res, next, userData);
 };
 
-module.exports.login = (req, res) => {
-  const { email, password } = req.body;
-  return User.findUser(email, password).then((user) => {
-    const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
-    res.cookie('token', token, { maxAge: 3600 * 24 * 7, httpOnly: true, sameSite: true })
-      .send({ email })
-      .catch((err) => {
-        if (err.name === 'ValidationError') {
-          return res
-            .status(INCORRECT_DATA_ERROR_CODE)
-            .send({ message: 'Отправленные данные некорректный, перепроверьте данные.' });
-        }
-        return res
-          .status(DEFAULT_ERROR_CODE)
-          .send({ message: 'На сервере произошла ошибка' });
-      });
-  });
+module.exports.getMyData = (req, res, next) => {
+  User.findOne({ _id: req.user._id })
+    .then((user) => { res.send(user); })
+    .catch(next);
 };
