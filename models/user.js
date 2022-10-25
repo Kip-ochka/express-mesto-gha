@@ -39,7 +39,6 @@ const userSchema = new Schema({
   password: {
     type: String,
     requared: true,
-    minlength: 2,
     select: false,
   },
 }, {

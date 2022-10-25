@@ -23,8 +23,7 @@ module.exports.createCards = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequest('Ошибка валидации'));
-      }
-      next(err);
+      } else { next(err); }
     });
 };
 

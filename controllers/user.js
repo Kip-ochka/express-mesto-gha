@@ -63,11 +63,7 @@ module.exports.login = (req, res, next) => {
       res.cookie('token', token, { maxAge: 3600 * 24 * 7, httpOnly: true, sameSite: true })
         .send({ email });
     }).catch((err) => {
-      if (err.name === 'CastError') {
-        next(new BadRequest('Некорректный формат id пользователя'));
-      } else {
-        next(err);
-      }
+      next(err);
     });
 };
 

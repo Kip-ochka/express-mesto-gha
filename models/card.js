@@ -1,4 +1,5 @@
 const mestodb = require('mongoose');
+const validator = require('validator');
 
 const { Schema } = mestodb;
 
@@ -12,6 +13,10 @@ const cardSchema = new Schema({
   link: {
     type: String,
     required: true,
+    validate: {
+      validator: (v) => validator.isURL(v, { protocols: ['http', 'https'], require_protocol: true }),
+      message: ({ value }) => `${value} - некоректный адрес URL. Ожидается адрес в формате: http(s)://(www).site.com`,
+    },
   },
   owner: {
     type: mestodb.Schema.Types.ObjectId,
