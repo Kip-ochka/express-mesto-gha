@@ -67,6 +67,13 @@ module.exports.login = (req, res, next) => {
     });
 };
 
+module.exports.logout = (_, res, next) => {
+  res.clearCookie('token').send({ message: 'Вы вышли из профиля' })
+    .catch((err) => {
+      next(err);
+    });
+};
+
 const updateData = (req, res, next, userData) => {
   User.findByIdAndUpdate(req.user._id, userData, {
     new: true,
