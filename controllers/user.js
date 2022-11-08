@@ -60,7 +60,9 @@ module.exports.login = (req, res, next) => {
   return User.findUser(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d' });
-      res.cookie('token', token, { maxAge: 3600 * 24 * 7, httpOnly: true, sameSite: false })
+      res.cookie('token', token, {
+        maxAge: 3600 * 24 * 7, httpOnly: true, sameSite: 'None', scure: true,
+      })
         .send({ email });
     }).catch((err) => {
       next(err);
