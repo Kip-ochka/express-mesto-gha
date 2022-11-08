@@ -61,7 +61,7 @@ module.exports.login = (req, res, next) => {
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d' });
       res.cookie('token', token, {
-        maxAge: 3600 * 24 * 7, httpOnly: false, sameSite: 'None', secure: true,
+        maxAge: 3600 * 24 * 7, httpOnly: true, sameSite: 'None', secure: true,
       })
         .send({ email });
     }).catch((err) => {
