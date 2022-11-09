@@ -21,7 +21,7 @@ module.exports.createCards = (req, res, next) => {
   Cards.create({
     name,
     link,
-    owner: req.user._id,
+    owner: req.user,
   })
     .then((card) => {
       res.send(card);
