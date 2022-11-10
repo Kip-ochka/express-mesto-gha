@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const mestodb = require('mongoose');
 const helmet = require('helmet');
