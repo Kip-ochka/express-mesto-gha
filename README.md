@@ -1,18 +1,13 @@
 [![Tests for sprint 13](https://github.com/Kip-ochka/express-mesto-gha/actions/workflows/tests-13-sprint.yml/badge.svg)](https://github.com/Kip-ochka/express-mesto-gha/actions/workflows/tests-13-sprint.yml)  [![Tests for sprint 14](https://github.com/Kip-ochka/express-mesto-gha/actions/workflows/tests-14-sprint.yml/badge.svg)](https://github.com/${имя_пользователя}/Kip-ochka/express-mesto-gha/actions/workflows/tests-14-sprint.yml)
 # Проект Mesto фронтенд + бэкенд
 
+## О проекте
 
+Бекенд RESTApi часть full-stack приложения Место.
+Использованы технологии express, mongo, vanila JS.
 
-## Настройка бейджей статуса тестов
-Перед началом работы над проектом рекомендуется исправить бейджи, отражающие статус прохождения тестов.
-Для этого замените разметку бейджей на следующий фрагмент, подставив вместо `${имя_пользователя}` и `${имя_репозитория}` соответствующие значения.
-
-```
-[![Tests for sprint 13](https://github.com/Kip-ochka/express-mesto-gha/actions/workflows/tests-13-sprint.yml/badge.svg)](https://github.com/Kip-ochka/express-mesto-gha/actions/workflows/tests-13-sprint.yml) 
-
-[![Tests for sprint 14](https://github.com/Kip-ochka/express-mesto-gha/actions/workflows/tests-14-sprint.yml/badge.svg)](https://github.com/${имя_пользователя}/Kip-ochka/express-mesto-gha/actions/workflows/tests-14-sprint.yml)
-```
-
+## Возможности 
+Авторизация, регистрация, добавление новых постов, установка и удаление лайка, удаление постов, поиск пользователя.
 
 ## Директории
 
